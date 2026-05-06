@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shubham Shirsat — Product Designer & UI/UX Designer</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,400;0,9..144,600;1,9..144,200;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --fr: 'Fraunces', serif;
+      --dm: 'DM Sans', sans-serif;
+      --ink: #0d0d0d;
+      --ink2: #3a3835;
+      --ink3: #8a8780;
+      --line: #e5e2db;
+      --cream: #f8f6f2;
+      --white: #ffffff;
+      --teal: #0a7b6c;
+      --teal-deep: #065a4e;
+      --teal-light: #e0f2ef;
+      --teal-mid: #c1e9e3;
+      --coral: #e84c3d;
+      --gold: #d4a017;
+      --tag-bg: #e0f2ef;
+      --tag-c: #065a4e;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--dm);
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 3px; }
+
+    /* ── Navbar ── */
+    .site-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      padding: 16px 0;
+      background: rgba(248,246,242,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      transition: all .3s;
+    }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-logo {
+      font-family: var(--fr);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--teal); }
+    .nav-links { display: flex; gap: 28px; align-items: center; list-style: none; margin: 0; padding: 0; }
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink2);
+      text-decoration: none;
+      letter-spacing: .03em;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+    .nav-cta {
+      background: var(--teal) !important;
+      color: #fff !important;
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-weight: 500 !important;
+    }
+    .nav-cta:hover { background: var(--teal-deep) !important; }
+    .navbar-toggler-icon-custom {
+      display: flex; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px;
+    }
+    .navbar-toggler-icon-custom span {
+      display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; transition: all .3s;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      padding: 120px 0 80px;
+      display: flex; align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -120px; right: -200px;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #c1e9e330 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; bottom: -60px; left: -100px;
+      width: 350px; height: 350px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #e0f2ef25 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      width: 30px; height: 1px;
+      background: var(--teal);
+    }
+    .hero-name {
+      font-family: var(--fr);
+      font-size: clamp(44px, 7vw, 80px);
+      font-weight: 400;
+      line-height: 1.08;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+    .hero-name em {
+      font-style: italic;
+      font-weight: 200;
+      color: var(--teal);
+    }
+    .hero-tagline {
+      font-size: clamp(15px, 2vw, 18px);
+      color: var(--ink2);
+      font-weight: 300;
+      max-width: 540px;
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; }
+    .hero-tag {
+      font-size: 12px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid #b5ddd8;
+      color: var(--teal-deep);
+      background: var(--teal-light);
+      font-weight: 400;
+      letter-spacing: .02em;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .btn-primary-custom {
+      background: var(--teal);
+      color: #fff;
+      padding: 13px 28px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: background .2s, transform .15s;
+      border: 2px solid var(--teal);
+    }
+    .btn-primary-custom:hover { background: var(--teal-deep); color: #fff; transform: translateY(-1px); }
+    .btn-outline-custom {
+      background: transparent;
+      color: var(--ink);
+      padding: 13px 28px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: all .2s;
+      border: 2px solid var(--line);
+    }
+    .btn-outline-custom:hover { border-color: var(--teal); color: var(--teal); }
+
+    /* floating shape */
+    .hero-shape {
+      position: absolute; right: 5%; top: 50%; transform: translateY(-50%);
+      width: 360px; height: 360px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 20px 60px rgba(10,123,108,.08);
+      animation: morphFloat 8s ease-in-out infinite;
+    }
+    @keyframes morphFloat {
+      0%,100% { border-radius: 40% 60% 55% 45% / 50% 45% 55% 50%; transform: translateY(-50%) rotate(0deg); }
+      33% { border-radius: 60% 40% 45% 55% / 45% 55% 50% 50%; transform: translateY(-52%) rotate(1deg); }
+      66% { border-radius: 45% 55% 60% 40% / 55% 45% 45% 55%; transform: translateY(-48%) rotate(-1deg); }
+    }
+    .hero-shape-inner { text-align: center; padding: 30px; }
+    .hero-shape-num {
+      font-family: var(--fr);
+      font-size: 52px;
+      font-weight: 600;
+      color: var(--teal);
+      line-height: 1;
+    }
+    .hero-shape-label {
+      font-size: 12px;
+      color: var(--ink3);
+      margin-top: 4px;
+      letter-spacing: .05em;
+    }
+    .hero-stats { display: flex; gap: 32px; margin-top: 8px; }
+    .hero-stat-item { text-align: center; }
+    .hero-stat-n { font-family: var(--fr); font-size: 22px; font-weight: 600; color: var(--teal); line-height: 1; }
+    .hero-stat-l { font-size: 10px; color: var(--ink3); margin-top: 3px; letter-spacing: .04em; }
+
+    /* ── Section Utility ── */
+    .sec-eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--teal);
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 12px;
+    }
+    .sec-eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--teal); }
+
+    .section-divider {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, var(--teal), transparent);
+      margin-bottom: 40px;
+    }
+
+    /* ── About ── */
+    .about-section { padding: 100px 0; }
+    .about-text {
+      font-family: var(--fr);
+      font-size: clamp(18px, 2.4vw, 24px);
+      font-weight: 200;
+      line-height: 1.65;
+      color: var(--ink);
+      font-style: italic;
+    }
+    .about-text strong { font-weight: 600; font-style: normal; color: var(--teal); }
+    .about-desc {
+      font-size: 15px;
+      color: var(--ink2);
+      line-height: 1.75;
+    }
+    .contact-row { display: flex; flex-direction: column; gap: 10px; }
+    .contact-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--ink2);
+      text-decoration: none;
+    }
+    .contact-item:hover { color: var(--teal); }
+    .contact-icon {
+      width: 32px; height: 32px;
+      background: var(--teal-light);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .contact-icon svg { width: 14px; height: 14px; stroke: var(--teal); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ── Work Section ── */
+    .work-section { padding: 100px 0; background: var(--white); }
+    .work-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    @media(max-width: 768px) { .work-grid { grid-template-columns: 1fr; } }
+
+    .case-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--white);
+      text-decoration: none;
+      color: inherit;
+      display: flex; flex-direction: column;
+      transition: transform .25s, box-shadow .25s;
+      position: relative;
+    }
+    .case-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(10,123,108,.1);
+      color: inherit;
+    }
+    .case-card-thumb {
+      height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .case-card-thumb-1 { background: linear-gradient(135deg, #0a7b6c15, #c1e9e340); }
+    .case-card-thumb-2 { background: linear-gradient(135deg, #e0f2ef30, #0a7b6c20); }
+    .case-card-thumb svg { width: 80px; height: 80px; opacity: .2; stroke: var(--teal); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .case-thumb-label {
+      position: absolute; top: 14px; left: 14px;
+      font-size: 10px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--teal-deep); background: var(--teal-light);
+      padding: 4px 12px; border-radius: 20px;
+    }
+    .case-card-body { padding: 24px 26px 28px; flex: 1; display: flex; flex-direction: column; }
+    .case-company {
+      font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 8px;
+    }
+    .case-title {
+      font-family: var(--fr);
+      font-size: clamp(18px, 2vw, 22px);
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .case-title em { font-style: italic; font-weight: 200; color: var(--teal); }
+    .case-desc { font-size: 13px; color: var(--ink2); line-height: 1.7; flex: 1; margin-bottom: 18px; }
+    .case-footer-row { display: flex; align-items: center; justify-content: space-between; }
+    .case-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .case-chip {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: var(--teal-light);
+      color: var(--teal-deep);
+      border: 1px solid #b5ddd8;
+    }
+    .case-arrow {
+      width: 34px; height: 34px;
+      border: 1.5px solid var(--line);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: all .2s;
+    }
+    .case-card:hover .case-arrow { background: var(--teal); border-color: var(--teal); }
+    .case-arrow svg { width: 14px; height: 14px; stroke: var(--ink3); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke .2s; }
+    .case-card:hover .case-arrow svg { stroke: #fff; }
+
+    /* ── Experience ── */
+    .exp-section { padding: 100px 0; }
+    .exp-timeline { position: relative; padding-left: 28px; }
+    .exp-timeline::before {
+      content: ''; position: absolute; left: 0; top: 8px; bottom: 8px;
+      width: 1px; background: linear-gradient(to bottom, var(--teal), var(--line));
+    }
+    .exp-item { position: relative; padding-bottom: 44px; }
+    .exp-item:last-child { padding-bottom: 0; }
+    .exp-dot {
+      position: absolute; left: -34px; top: 4px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--teal);
+      border: 2px solid var(--cream);
+      box-shadow: 0 0 0 2px var(--teal);
+    }
+    .exp-dot.hollow { background: var(--cream); }
+    .exp-period {
+      font-size: 11px; font-weight: 500; letter-spacing: .06em;
+      color: var(--white);
+      background: var(--teal);
+      padding: 3px 10px; border-radius: 4px;
+      display: inline-block; margin-bottom: 8px;
+    }
+    .exp-role { font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+    .exp-company {
+      font-family: var(--fr);
+      font-size: 14px; font-style: italic;
+      color: var(--teal); margin-bottom: 4px;
+    }
+    .exp-location { font-size: 12px; color: var(--ink3); margin-bottom: 12px; }
+    .exp-summary { font-size: 13.5px; color: var(--ink2); line-height: 1.75; margin-bottom: 12px; }
+    .exp-bullets { list-style: none; padding: 0; margin: 0; }
+    .exp-bullets li {
+      font-size: 13px; color: var(--ink2); line-height: 1.7;
+      padding: 6px 0 6px 18px; position: relative;
+      border-bottom: 1px solid var(--line);
+    }
+    .exp-bullets li:last-child { border-bottom: none; }
+    .exp-bullets li::before {
+      content: ''; position: absolute; left: 0; top: 14px;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--teal); opacity: .5;
+    }
+
+    /* ── Skills ── */
+    .skills-section { padding: 100px 0; background: var(--white); }
+    .skill-group { margin-bottom: 36px; }
+    .skill-group-title {
+      font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .skill-group-title::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+    .skills-flex { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill-pill {
+      font-size: 13px;
+      padding: 6px 16px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--cream);
+      color: var(--ink2);
+      transition: all .18s;
+    }
+    .skill-pill:hover { background: var(--teal-light); border-color: #b5ddd8; color: var(--teal-deep); }
+    .skill-pill.featured { background: var(--teal-light); border-color: #b5ddd8; color: var(--teal-deep); font-weight: 500; }
+
+    /* ── Education ── */
+    .edu-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 28px 30px;
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+    .edu-card::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+      background: linear-gradient(to bottom, var(--teal), var(--teal-mid));
+    }
+    .edu-degree { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+    .edu-uni { font-family: var(--fr); font-size: 14px; font-style: italic; color: var(--teal); margin-bottom: 4px; }
+    .edu-meta { font-size: 12px; color: var(--ink3); }
+    .edu-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 500;
+      color: var(--white); background: var(--teal);
+      padding: 5px 14px; border-radius: 20px; margin-top: 12px;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+      background: var(--teal-deep);
+      color: var(--white);
+      padding: 60px 0 40px;
+    }
+    .footer-name {
+      font-family: var(--fr); font-size: 28px; font-weight: 400;
+      color: var(--white); margin-bottom: 4px;
+    }
+    .footer-role { font-size: 13px; color: rgba(255,255,255,.6); margin-bottom: 24px; }
+    .footer-divider { border-color: rgba(255,255,255,.1); margin: 28px 0; }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,.4); }
+    .footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+    .footer-link {
+      font-size: 13px; color: rgba(255,255,255,.7);
+      text-decoration: none; transition: color .2s;
+    }
+    .footer-link:hover { color: var(--white); }
+
+    /* ── Animations ── */
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .6s, transform .6s; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Mobile Nav ── */
+    @media(max-width: 768px) {
+      .hero-shape { display: none; }
+      .hero { padding: 100px 0 60px; }
+      .hero-name { font-size: clamp(38px, 10vw, 56px); }
+    }
+    .mobile-nav {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999;
+      background: var(--cream);
+      flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 28px;
+    }
+    .mobile-nav.open { display: flex; }
+    .mobile-nav a {
+      font-family: var(--fr); font-size: 28px; font-weight: 400;
+      color: var(--ink); text-decoration: none;
+    }
+    .mobile-nav-close {
+      position: absolute; top: 20px; right: 20px;
+      background: none; border: none; cursor: pointer; padding: 8px;
+    }
+    .mobile-nav-close svg { width: 22px; height: 22px; stroke: var(--ink); fill: none; stroke-width: 2; }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════ NAVBAR ════════════════ -->
+<nav class="site-nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">Shubham<span>.</span></a>
+      <ul class="nav-links d-none d-md-flex">
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="mailto:shubhum.designs@gmail.com" class="nav-cta">Get in Touch</a></li>
+      </ul>
+      <button class="d-md-none bg-transparent border-0 p-1" onclick="document.querySelector('.mobile-nav').classList.add('open')">
+        <div class="navbar-toggler-icon-custom"><span></span><span></span><span></span></div>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav">
+  <button class="mobile-nav-close" onclick="document.querySelector('.mobile-nav').classList.remove('open')">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <a href="#work" onclick="document.querySelector('.mobile-nav').classList.remove('open')">Work</a>
+  <a href="#about" onclick="document.querySelector('.mobile-nav').classList.remove('open')">About</a>
+  <a href="#experience" onclick="document.querySelector('.mobile-nav').classList.remove('open')">Experience</a>
+  <a href="#skills" onclick="document.querySelector('.mobile-nav').classList.remove('open')">Skills</a>
+  <a href="mailto:shubhum.designs@gmail.com" style="font-size:16px!important;">shubhum.designs@gmail.com</a>
+</div>
+
+<!-- ════════════════ HERO ════════════════ -->
+<section class="hero" id="home">
+  <div class="container position-relative" style="z-index:1;">
+    <div class="row">
+      <div class="col-lg-7">
+        <div class="hero-eyebrow">Product Designer · UI/UX</div>
+        <h1 class="hero-name">
+          Shubham<br><em>Shirsat</em>
+        </h1>
+        <p class="hero-tagline">
+          Transforming ideas into engaging digital experiences. Designing scalable, user-centered products with a strong foundation in Figma, HTML, CSS, JavaScript, and Bootstrap.
+        </p>
+        <div class="hero-tags">
+          <span class="hero-tag">Product Design</span>
+          <span class="hero-tag">UX Research</span>
+          <span class="hero-tag">Design Systems</span>
+          <span class="hero-tag">Figma</span>
+          <span class="hero-tag">Front-End Aware</span>
+          <span class="hero-tag">SaaS Products</span>
+        </div>
+        <div class="hero-actions">
+          <a href="#work" class="btn-primary-custom">
+            View Case Studies
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </a>
+          <a href="mailto:shubhum.designs@gmail.com" class="btn-outline-custom">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Say Hello
+          </a>
+        </div>
+        <div class="hero-stats mt-5">
+          <div class="hero-stat-item">
+            <div class="hero-stat-n">5+</div>
+            <div class="hero-stat-l">Years Exp.</div>
+          </div>
+          <div class="hero-stat-item">
+            <div class="hero-stat-n">40+</div>
+            <div class="hero-stat-l">Products</div>
+          </div>
+          <div class="hero-stat-item">
+            <div class="hero-stat-n">3</div>
+            <div class="hero-stat-l">Companies</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Floating shape (desktop only) -->
+  <div class="hero-shape d-none d-lg-flex">
+    <div class="hero-shape-inner">
+      <div style="font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:18px;">Currently</div>
+      <div class="hero-shape-num">Senior</div>
+      <div style="font-family:var(--fr);font-size:18px;font-style:italic;color:var(--teal);margin-bottom:4px;">Web Designer</div>
+      <div style="font-size:12px;color:var(--ink3);">Yardi Softwares</div>
+      <div style="margin:20px 0;width:40px;height:1px;background:var(--line);margin-left:auto;margin-right:auto;"></div>
+      <div style="font-size:11px;color:var(--ink3);">Pune, Maharashtra</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:var(--teal);font-weight:500;">
+        <span style="width:6px;height:6px;border-radius:50%;background:var(--teal);display:inline-block;animation:pulse 2s infinite;"></span>
+        May 2021 – Present
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ ABOUT ════════════════ -->
+<section class="about-section" id="about">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-7 fade-up">
+        <div class="sec-eyebrow">About Me</div>
+        <div class="section-divider"></div>
+        <p class="about-text mb-4">
+          Designing products that <strong>solve real problems</strong>, feel intuitive to use, and scale gracefully across complex enterprise systems.
+        </p>
+        <p class="about-desc mb-4">
+          With over 7+ years of experience spanning SaaS products, internal tools, and WordPress platforms, I bring a rare combination of UX thinking and front-end implementation knowledge. I've worked closely with product managers, engineers, and stakeholders to ship solutions that balance business goals with user needs.
+        </p>
+        <p class="about-desc">
+          At Yardi Softwares, I design for enterprise real estate platforms used by thousands of property managers, leasing agents, and residents — products where clarity, consistency, and trust are non-negotiable.
+        </p>
+      </div>
+      <div class="col-lg-4 offset-lg-1 fade-up">
+        <div class="contact-row">
+          
+          <a href="tel:+917620652110" class="contact-item">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            +91 7620652110
+          </a>
+          <a href="tel:+918983259912" class="contact-item">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            +91 8983259912
+          </a>
+          <a href="mailto:shubhum.designs@gmail.com" class="contact-item">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+           shubhum.designs@gmail.com
+          </a>
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            Pune, Maharashtra, 411023
+          </div>
+        </div>
+
+        <div class="edu-card mt-4">
+          <div class="edu-degree">B.Tech — Computer Science &amp; Engineering</div>
+          <div class="edu-uni">Shri Guru Gobind Singhji Institute of Engineering &amp; Technology</div>
+          <div class="edu-meta">Swami Ramanand Teerth Marathwada University · Nanded, MH</div>
+          <div class="edu-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            CGPA: 6.14 · May 2018
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ WORK / CASE STUDIES ════════════════ -->
+<section class="work-section" id="work">
+  <div class="container">
+    <div class="sec-eyebrow fade-up">Selected Work</div>
+    <div class="section-divider"></div>
+    <div class="row mb-5 fade-up">
+      <div class="col-lg-6">
+        <h2 style="font-family:var(--fr);font-size:clamp(28px,4vw,40px);font-weight:400;line-height:1.15;color:var(--ink);">
+          Product case studies from <em style="font-style:italic;font-weight:200;color:var(--teal);">enterprise SaaS</em>
+        </h2>
+      </div>
+      <div class="col-lg-5 offset-lg-1 d-flex align-items-end">
+        <p style="font-size:14px;color:var(--ink2);line-height:1.7;">
+          Both case studies come from my time at Yardi Softwares — a product-based SaaS company building real estate platforms for property managers, leasing teams, and residents at scale.
+        </p>
+      </div>
+    </div>
+
+    <div class="work-grid fade-up">
+      <!-- Case Study 1 -->
+      <a href="case-study-centralise-custom-code.html" class="case-card" target="_blank">
+        <div class="case-card-thumb case-card-thumb-1">
+      <span class="case-thumb-label">Product Feature</span>
+      <img src="case_thumbnail_custom_code.jpg" class="img img-fluid case_thumbnail" >
+        </div>
+        <div class="case-card-body">
+          <div class="case-company">Yardi Softwares · RentCafe</div>
+          <h3 class="case-title">Centralized CSS &amp; JS<br><em>Injection Tool</em></h3>
+          <p class="case-desc">Redesigned a tool that lets non-technical teams push code changes to 100–1000+ property themes simultaneously — eliminating developer dependency for large-scale updates.</p>
+          <div class="case-footer-row">
+            <div class="case-chips">
+              <span class="case-chip">UX Design</span>
+              <span class="case-chip">Enterprise</span>
+              <span class="case-chip">Dev Handoff</span>
+            </div>
+            <div class="case-arrow">
+              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Case Study 2 -->
+      <a href="case-study-Additional-Menu.html" class="case-card" target="_blank">
+        <div class="case-card-thumb case-card-thumb-2">
+          <span class="case-thumb-label">Product Feature</span>
+        <img src="case_thumbnail_additional_menu.jpg" class="img img-fluid case_thumbnail">
+        </div>
+        <div class="case-card-body">
+          <div class="case-company">Yardi Softwares · Site Manager</div>
+          <h3 class="case-title">Custom Menu<br><em>Feature Design</em></h3>
+          <p class="case-desc">Designed a no-code custom menu builder inside a CMS that reduced link-update time from 30 minutes to under 5 — empowering designers to work independently without developer support.</p>
+          <div class="case-footer-row">
+            <div class="case-chips">
+              <span class="case-chip">Product Design</span>
+              <span class="case-chip">CMS</span>
+              <span class="case-chip">No-Code</span>
+            </div>
+            <div class="case-arrow">
+              <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ EXPERIENCE ════════════════ -->
+<section class="exp-section" id="experience">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 mb-4 fade-up">
+        <div class="sec-eyebrow">Experience</div>
+        <div class="section-divider"></div>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.75;"> 5+ years of experience designing digital products across SaaS platforms, web applications, and enterprise tools, combined with 2 years of hands-on experience as a Software & UI Developer.</p>
+      </div>
+      <div class="col-lg-8 offset-lg-1 fade-up">
+        <div class="exp-timeline">
+
+          <!-- Yardi -->
+          <div class="exp-item">
+            <div class="exp-dot"></div>
+            <div class="exp-period">May 2021 – Present</div>
+            <div class="exp-role">Senior Web Designer</div>
+            <div class="exp-company">Yardi Softwares — Product-Based SaaS MNC Company</div>
+            <div class="exp-location">Pune, Maharashtra</div>
+            <p class="exp-summary">Worked in a product-driven SaaS environment designing scalable, user-centered experiences for enterprise real estate platforms, resident portals, and leasing products. Partnered closely with Product Managers, Engineers, and stakeholders to improve usability, consistency, and business outcomes across complex systems.</p>
+            <ul class="exp-bullets">
+              <li>Led end-to-end product design for enterprise SaaS dashboards, resident portals, and online leasing platforms.</li>
+              <li>Translated user needs and business requirements into user flows, wireframes, high-fidelity UI, and interactive prototypes.</li>
+              <li>Designed scalable design systems and reusable UI components, ensuring visual and functional consistency across products.</li>
+              <li>Leveraged hands-on knowledge of HTML, CSS, Bootstrap, JavaScript, React, and Angular to design developer-friendly UI solutions.</li>
+              <li>Improved usability by redesigning legacy interfaces and simplifying complex workflows.</li>
+              <li>Facilitated smooth design-to-development handoff, reducing implementation gaps due to strong understanding of front-end constraints.</li>
+            </ul>
+          </div>
+
+          <!-- Yobisys -->
+          <div class="exp-item">
+            <div class="exp-dot hollow"></div>
+            <div class="exp-period">Jun 2020 – May 2021</div>
+            <div class="exp-role">User Interface Developer (UI Developer)</div>
+            <div class="exp-company">Yobisys Solutions (Startup)</div>
+            <div class="exp-location">Pune, Maharashtra</div>
+            <ul class="exp-bullets">
+              <li>Collaborated closely with clients and stakeholders to gather requirements, define user needs, and deliver customized, user-centered product solutions.</li>
+              <li>Led the design and development of 40+ WordPress-based products/websites, applying UX best practices, responsive design, and accessibility standards.</li>
+              <li>Worked directly with leadership (CEO) to align design decisions with business objectives, product strategy, and client expectations.</li>
+              <li>Leveraged strong front-end knowledge to ensure feasible, developer-ready designs and smooth implementation.</li>
+              <li>Mentored junior designers and contributed to team-wide design best practices.</li>
+            </ul>
+          </div>
+
+          <!-- Apastron -->
+          <div class="exp-item">
+            <div class="exp-dot hollow"></div>
+            <div class="exp-period">Dec 2018 – Mar 2020</div>
+            <div class="exp-role">Software Engineer</div>
+            <div class="exp-company">Apastron Technologies (Startup)</div>
+            <div class="exp-location">Pune, Maharashtra</div>
+            <ul class="exp-bullets">
+              <li>Collaborated with clients to understand requirements and deliver customized solutions.</li>
+              <li>Designed and implemented intuitive backend dashboards to enhance user experience and functionality.</li>
+              <li>Reported directly to the CEO, ensuring alignment with company goals and client expectations.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ SKILLS ════════════════ -->
+<section class="skills-section" id="skills">
+  <div class="container">
+    <div class="sec-eyebrow fade-up">Skill Stack</div>
+    <div class="section-divider"></div>
+    <div class="row g-4">
+      <div class="col-lg-4 fade-up">
+        <h2 style="font-family:var(--fr);font-size:clamp(24px,3vw,32px);font-weight:400;line-height:1.2;margin-bottom:16px;">
+          Design &amp; <em style="font-style:italic;font-weight:200;color:var(--teal);">technical</em> expertise
+        </h2>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.75;">A combination of deep UX craft and front-end fluency that bridges design and engineering.</p>
+      </div>
+      <div class="col-lg-7 offset-lg-1 fade-up">
+
+        <div class="skill-group">
+          <div class="skill-group-title">Design &amp; UX</div>
+          <div class="skills-flex">
+            <span class="skill-pill featured">UX/UI Design</span>
+            <span class="skill-pill featured">Product Design</span>
+            <span class="skill-pill featured">User Flows</span>
+            <span class="skill-pill featured">Wireframing &amp; Prototyping</span>
+            <span class="skill-pill">Information Architecture</span>
+            <span class="skill-pill">User Research</span>
+            <span class="skill-pill">Usability Testing</span>
+            <span class="skill-pill">Accessibility &amp; Responsive Design</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-title">Design Systems</div>
+          <div class="skills-flex">
+            <span class="skill-pill featured">Design Systems</span>
+            <span class="skill-pill featured">Component Libraries</span>
+            <span class="skill-pill">Design-to-Development Handoff</span>
+            <span class="skill-pill">Stakeholder Collaboration</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-title">Web &amp; Front-End</div>
+          <div class="skills-flex">
+            <span class="skill-pill featured">HTML5</span>
+            <span class="skill-pill featured">CSS3</span>
+            <span class="skill-pill featured">Bootstrap</span>
+            <span class="skill-pill">JavaScript</span>
+            <span class="skill-pill">jQuery</span>
+            <span class="skill-pill">PHP</span>
+            <span class="skill-pill">Cross-browser Compatibility</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <div class="skill-group-title">Tools</div>
+          <div class="skills-flex">
+            <span class="skill-pill featured">Figma</span>
+            <span class="skill-pill">WordPress</span>
+            <span class="skill-pill">React</span>
+            <span class="skill-pill">Angular</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="row align-items-start">
+      <div class="col-md-6 mb-4 mb-md-0">
+        <div class="footer-name">Shubham Shirsat</div>
+        <div class="footer-role">Product Designer · UI/UX Designer · Pune, India</div>
+        <div class="footer-links">
+          <a href="mailto:shubhum.designs@gmail.com" class="footer-link">shubhum.designs@gmail.com</a>
+          <a href="tel:+91122333" class="footer-link">+91 122333</a>
+        </div>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <a href="#work" class="footer-link d-block mb-2">Case Studies</a>
+        <a href="#about" class="footer-link d-block mb-2">About</a>
+        <a href="#experience" class="footer-link d-block mb-2">Experience</a>
+        <a href="#skills" class="footer-link d-block">Skills</a>
+      </div>
+    </div>
+    <hr class="footer-divider">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <div class="footer-copy">© 2024 Shubham Shirsat. Designed &amp; built for impact.</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.3);">Pune · Maharashtra · India</div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Intersection observer for fade-up animations
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+</script>
+<style>
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:.5; transform:scale(1.3); }
+}
+</style>
+</body>
+</html>

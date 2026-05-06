@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Case Study — Additional Menus Feature | Shubham Shirsat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,400;0,9..144,600;1,9..144,200;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --fr: 'Fraunces', serif;
+      --dm: 'DM Sans', sans-serif;
+      --ink: #0d0d0d;
+      --ink2: #3a3835;
+      --ink3: #8a8780;
+      --line: #e5e2db;
+      --cream: #f8f6f2;
+      --white: #ffffff;
+      --teal: #0a7b6c;
+      --teal-deep: #065a4e;
+      --teal-light: #e0f2ef;
+      --teal-mid: #c1e9e3;
+      --tag-bg: #e0f2ef;
+      --tag-c: #065a4e;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--dm); background: var(--cream); color: var(--ink); line-height: 1.65; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 3px; }
+
+    .site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 999; padding: 14px 0; background: rgba(248,246,242,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+    .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { font-family: var(--fr); font-size: 18px; font-weight: 600; color: var(--ink); text-decoration: none; }
+    .nav-logo span { color: var(--teal); }
+    .nav-back { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--ink2); text-decoration: none; transition: color .2s; }
+    .nav-back:hover { color: var(--teal); }
+    .nav-back svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .progress-bar-wrap { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 9999; }
+    .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--teal), var(--teal-mid)); transition: width .1s; }
+
+    .hero-section { padding: 100px 0 64px; border-bottom: 1px solid var(--line); position: relative; overflow: hidden; }
+    .hero-section::before { content: ''; position: absolute; top: -100px; right: -150px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, #c1e9e328 0%, transparent 70%); pointer-events: none; }
+    .cs-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--teal); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+    .cs-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--teal); }
+    .hero-title { font-family: var(--fr); font-size: clamp(28px, 4.5vw, 48px); font-weight: 400; line-height: 1.12; color: var(--ink); margin-bottom: 20px; }
+    .hero-title em { font-style: italic; font-weight: 200; color: var(--teal); }
+
+    .impact-strip { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    .impact-cell { padding: 20px 22px; text-align: center; background: var(--white); border-right: 1px solid var(--line); }
+    .impact-cell:last-child { border-right: none; }
+    .impact-num { font-family: var(--fr); font-size: 30px; font-weight: 600; color: var(--teal); line-height: 1; }
+    .impact-label { font-size: 11px; color: var(--ink3); margin-top: 5px; letter-spacing: .03em; }
+
+    .case-section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+    .case-section:last-child { border-bottom: none; }
+    .sec-label { font-size: 10px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--teal); display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
+    .sec-label::before { content: ''; width: 20px; height: 1px; background: var(--teal); }
+    .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+    h2.sec-title { font-family: var(--fr); font-size: clamp(20px, 3vw, 28px); font-weight: 400; color: var(--ink); margin-bottom: 16px; line-height: 1.2; }
+
+    .overview-table { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--white); max-width: 680px; }
+    .overview-row { display: grid; grid-template-columns: 150px 1fr; border-bottom: 1px solid var(--line); }
+    .overview-row:last-child { border-bottom: none; }
+    .ov-key { background: #f4f2ee; padding: 14px 18px; font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ink3); display: flex; align-items: center; border-right: 1px solid var(--line); }
+    .ov-val { padding: 14px 20px; font-size: 13px; color: var(--ink2); line-height: 1.6; display: flex; align-items: center; }
+    .ov-val strong { color: var(--ink); font-weight: 500; }
+
+    .problem-item { padding: 14px 0 14px 16px; border-bottom: 1px solid var(--line); border-left: 3px solid #d4453055; }
+    .problem-item:last-child { border-bottom: none; }
+    .problem-heading { font-size: 13px; font-weight: 500; color: #c0392b; margin-bottom: 4px; }
+    .problem-desc { font-size: 12px; color: var(--ink3); line-height: 1.65; margin: 0; }
+
+    .constraint-card { background: #fff7ed; border: 1px solid #f0d9b5; border-radius: 10px; padding: 18px 20px; height: 100%; }
+    .constraint-title { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #a05c00; margin-bottom: 8px; }
+    .constraint-card p { font-size: 13px; color: #7a4400; line-height: 1.65; margin: 0; }
+
+    .before-card { background: #fdf3f1; border: 1px solid #e8c4bc; border-radius: 10px; padding: 20px; height: 100%; }
+    .after-card { background: #eaf6ee; border: 1px solid #b8dcc3; border-radius: 10px; padding: 20px; height: 100%; }
+    .ba-label { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
+    .before-card .ba-label { color: #a0341e; }
+    .after-card .ba-label { color: #1a5c35; }
+    .ba-list { list-style: none; padding: 0; margin: 0; }
+    .ba-list li { font-size: 13px; padding: 7px 0 7px 20px; border-bottom: 1px solid rgba(0,0,0,.06); position: relative; line-height: 1.6; }
+    .ba-list li:last-child { border-bottom: none; }
+    .before-card .ba-list li { color: #8b3a26; }
+    .after-card .ba-list li { color: #2d6a4f; }
+    .before-card .ba-list li::before { content: '✕'; position: absolute; left: 0; font-size: 10px; top: 9px; color: #c0392b; }
+    .after-card .ba-list li::before { content: '✓'; position: absolute; left: 0; font-size: 11px; top: 8px; color: #27ae60; font-weight: 600; }
+
+    .hmw-block { background: var(--teal-deep); border-radius: 14px; padding: 30px 36px; }
+    .hmw-block .hmw-label { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #7bbf9a; margin-bottom: 12px; }
+    .hmw-block p { font-family: var(--fr); font-size: 20px; font-weight: 200; color: #fff; font-style: italic; line-height: 1.6; margin: 0; }
+
+    .user-card { border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; background: var(--white); height: 100%; }
+    .user-role { font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+    .user-need { font-size: 13px; color: var(--ink2); line-height: 1.7; }
+
+    .decision-row { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: flex-start; }
+    .decision-row:last-child { border-bottom: none; }
+    .decision-tag { font-size: 10px; font-weight: 500; padding: 3px 10px; border-radius: 4px; background: var(--tag-bg); color: var(--tag-c); white-space: nowrap; margin-top: 2px; flex-shrink: 0; }
+    .decision-text { font-size: 13px; color: var(--ink2); line-height: 1.65; }
+
+    .ec-item { display: flex; gap: 12px; align-items: flex-start; font-size: 13px; color: var(--ink2); padding: 11px 0; border-bottom: 1px solid var(--line); }
+    .ec-item:last-child { border-bottom: none; }
+    .ec-dot { width: 8px; height: 8px; border-radius: 50%; background: #e8a020; margin-top: 6px; flex-shrink: 0; }
+
+    .tradeoff-gain { background: #eaf6ee; border: 1px solid #b8dcc3; border-radius: 10px; padding: 20px 22px; }
+    .tradeoff-loss { background: #fdf3f1; border: 1px solid #e8c4bc; border-radius: 10px; padding: 20px 22px; }
+    .tradeoff-title { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; }
+    .tradeoff-gain .tradeoff-title { color: #1a5c35; }
+    .tradeoff-loss .tradeoff-title { color: #a0341e; }
+    .tradeoff-gain p, .tradeoff-gain ul { font-size: 13px; color: #2d6a4f; line-height: 1.7; margin: 0; }
+    .tradeoff-loss p, .tradeoff-loss ul { font-size: 13px; color: #8b3a26; line-height: 1.7; margin: 0; }
+    .tradeoff-gain ul, .tradeoff-loss ul { padding-left: 16px; }
+    .tradeoff-gain ul li, .tradeoff-loss ul li { margin-bottom: 4px; }
+
+    .result-card { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: flex; gap: 14px; align-items: flex-start; height: 100%; transition: transform .2s, box-shadow .2s; }
+    .result-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,123,108,.08); }
+    .result-icon { width: 38px; height: 38px; border-radius: 8px; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .result-icon svg { width: 18px; height: 18px; stroke: var(--teal); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .result-num { font-family: var(--fr); font-size: 20px; font-weight: 600; color: var(--teal); line-height: 1; }
+    .result-desc { font-size: 12px; color: var(--ink3); margin-top: 4px; }
+
+    .learning-item { display: flex; gap: 18px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .learning-item:last-child { border-bottom: none; }
+    .learn-num { font-family: var(--fr); font-size: 24px; font-weight: 200; color: var(--line); flex-shrink: 0; width: 32px; line-height: 1; }
+    .learn-text { font-size: 13.5px; color: var(--ink2); line-height: 1.75; }
+    .learn-text strong { color: var(--ink); font-weight: 500; }
+
+    /* Image display */
+    .img-wrap { border-radius: 12px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 4px 24px rgba(0,0,0,.07); background: #fff; }
+    .img-wrap img { width: 100%; display: block; }
+    .img-caption { background: var(--cream); border-top: 1px solid var(--line); padding: 10px 16px; font-size: 11.5px; color: var(--ink3); line-height: 1.6; }
+    .img-caption strong { color: var(--teal-deep); font-weight: 500; }
+
+    /* Flow image zoom */
+    .flow-zoom-wrap {
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      box-shadow: 0 4px 24px rgba(0,0,0,.07);
+      background: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+    .flow-zoom-inner {
+      overflow: hidden;
+      position: relative;
+      cursor: zoom-in;
+    }
+    .flow-zoom-inner img {
+      width: 100%;
+      display: block;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transform-origin: var(--ox, 50%) var(--oy, 50%);
+    }
+    .flow-zoom-inner:hover img {
+      transform: scale(2.4);
+    }
+    .flow-zoom-inner .zoom-hint {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(6,90,78,0.85);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+      backdrop-filter: blur(6px);
+      transition: opacity 0.3s;
+      letter-spacing: 0.03em;
+    }
+    .flow-zoom-inner:hover .zoom-hint {
+      opacity: 0;
+    }
+    .zoom-hint svg {
+      width: 12px; height: 12px;
+      stroke: #fff; fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Lightbox overlay */
+    .flow-lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(6,10,14,0.92);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .flow-lightbox.open {
+      display: flex;
+    }
+    .flow-lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 10px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.6);
+      object-fit: contain;
+      animation: lbIn .25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .flow-lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .flow-lightbox-close:hover { background: rgba(255,255,255,.22); }
+    .flow-lightbox-close svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .flow-lightbox-tip {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: rgba(255,255,255,.5);
+      letter-spacing: .04em;
+    }
+    @keyframes lbIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    /* Annotation note */
+    .dnote { background: var(--teal-deep); color: #fff; border-radius: 10px; padding: 16px 18px; }
+    .dnote .dl { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #7bbf9a; margin-bottom: 8px; }
+    .dnote ul { margin: 0; padding-left: 16px; }
+    .dnote ul li { font-size: 12px; line-height: 1.75; }
+
+    /* Step flow boxes */
+    .step-flow { display: flex; flex-direction: column; gap: 0; }
+    .step-box { background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; position: relative; }
+    .step-box + .step-box { margin-top: 8px; }
+    .step-box::before { content: ''; position: absolute; left: 24px; top: -8px; width: 2px; height: 8px; background: var(--teal-mid); }
+    .step-box:first-child::before { display: none; }
+    .step-num { font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); margin-bottom: 4px; }
+    .step-text { font-size: 13px; color: var(--ink2); line-height: 1.65; }
+
+    .case-footer { background: var(--teal-deep); color: var(--white); padding: 48px 0; }
+    .footer-name { font-family: var(--fr); font-size: 22px; font-weight: 400; color: var(--white); }
+    .footer-role { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 4px; }
+    .footer-tag { font-size: 12px; padding: 7px 18px; border-radius: 6px; border: 1px solid rgba(255,255,255,.25); color: rgba(255,255,255,.8); background: transparent; text-decoration: none; transition: all .2s; }
+    .footer-tag:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+    @media (max-width: 576px) {
+      .impact-cell { border-right: none; border-bottom: 1px solid var(--line); }
+      .impact-cell:last-child { border-bottom: none; }
+      .overview-row { grid-template-columns: 1fr; }
+      .ov-key { border-right: none; border-bottom: 1px solid var(--line); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+
+<nav class="site-nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Shubham<span>.</span></a>
+      <a href="index.html#work" class="nav-back">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section">
+  <div class="container">
+    <p class="cs-eyebrow">Product Design Case Study · 04</p>
+    <h1 class="hero-title">
+      Additional Menus —<br><em>No Code. No Risk. No Dependency.</em>
+    </h1>
+    <div class="overview-table mb-4" style="max-width: 100%;">
+      <div class="overview-row">
+        <div class="ov-key">Product</div>
+        <div class="ov-val"><strong>RentCafe — Site Manager</strong> — a platform used by designers, developers, and client success teams to manage property websites across hundreds of communities</div>
+      </div>
+      <div class="overview-row">
+        <div class="ov-key">My Role</div>
+        <div class="ov-val"><strong>UX / Product Designer</strong> — identified the problem, designed the full solution from flow to final screens, collaborated with developers and PMs to build and ship it</div>
+      </div>
+      <div class="overview-row">
+        <div class="ov-key">Project Type</div>
+        <div class="ov-val"><strong>New Feature Design</strong> — a dedicated Additional Menus section in the configuration panel allowing anyone to create, manage, and publish custom navigation menus without writing code</div>
+      </div>
+      <div class="overview-row">
+        <div class="ov-key">Team</div>
+        <div class="ov-val">Project Manager, Frontend Developers, Backend Developers, Designers</div>
+      </div>
+      <div class="overview-row">
+        <div class="ov-key">Timeline</div>
+        <div class="ov-val">Discovery to launch across design and development cycles</div>
+      </div>
+    </div>
+    <div class="row g-0 impact-strip">
+      <div class="col impact-cell"><div class="impact-num">Zero</div><div class="impact-label">Code knowledge required</div></div>
+      <div class="col impact-cell"><div class="impact-num">Anyone</div><div class="impact-label">Can create and manage menus</div></div>
+      <div class="col impact-cell"><div class="impact-num">No risk</div><div class="impact-label">No broken sites from a typo</div></div>
+      <div class="col impact-cell"><div class="impact-num">Full control</div><div class="impact-label">Create, sort, update, delete</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- THE PROBLEM -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">The Problem</p>
+    <div class="row g-5">
+      <div class="col-md-5">
+        <h2 class="sec-title">Adding a menu meant writing code — every single time</h2>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.75;">Before this feature existed, adding a navigation menu to any property website required a designer or developer to write custom HTML or JavaScript by hand. One typo could break a live client site — and every update meant repeating the whole process from scratch.</p>
+      </div>
+      <div class="col-md-7">
+        <div class="problem-item">
+          <div class="problem-heading">No dedicated feature — manual code only</div>
+          <p class="problem-desc">There was no built-in way to add or manage navigation menus. Every menu had to be hand-coded using custom HTML or JavaScript, making it inaccessible to non-technical users.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-heading">One typo could break a live client site</div>
+          <p class="problem-desc">Custom code had no safety check. A single syntax error would go live immediately with no warning and no easy way to revert — putting client-facing sites at real risk.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-heading">Every update required going back into the code</div>
+          <p class="problem-desc">Adding a link, changing a URL, reordering items — all of it meant opening the raw markup again. There was no visual editor, no safety, and no independence for non-technical team members.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-heading">Company-wide menus had no scalable solution</div>
+          <p class="problem-desc">Clients with 100+ properties and shared links (e.g. a common Terms or Accessibility page) had no way to define one menu at the company level and apply it across properties. Every property had to be updated individually.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PREVIOUS METHOD -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Before — The Old Way</p>
+    <h2 class="sec-title mb-2">How it was done before this feature existed</h2>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:28px;">Designers and developers had two options: write a list manually inside an HTML Widget, or inject it via JavaScript directly in the Site Editor. Both required technical knowledge, and any mistake went live immediately on the client's website.</p>
+    <div class="row g-4 align-items-start">
+      <div class="col-lg-6">
+        <div class="img-wrap mb-3">
+          <img src="Previous_method_1.jpg" alt="Previous method — HTML Widget with manual code" class="img img-fluid">
+          <div class="img-caption"><strong>Method 1 — HTML Widget:</strong> A designer would open an HTML Widget and manually write &lt;ul&gt;/&lt;li&gt; tags with anchor links. Any markup mistake would render incorrectly or silently break the page.</div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="img-wrap mb-3">
+          <img src="Previous_method_2.jpg" alt="Previous method — Custom JavaScript injection" class="img img-fluid">
+          <div class="img-caption"><strong>Method 2 — Custom JavaScript:</strong> A developer would use <code>insertAdjacentHTML</code> to inject the menu into the footer element. More powerful, but far riskier — a single syntax error could break the entire page.</div>
+        </div>
+      </div>
+    </div>
+    <div class="row g-3 mt-2">
+      <div class="col-md-6">
+        <div class="before-card h-100">
+          <div class="ba-label">What was wrong with this</div>
+          <ul class="ba-list">
+            <li>Required HTML or JavaScript knowledge — non-technical users were completely locked out</li>
+            <li>No validation — broken code went live instantly with no warning or easy rollback</li>
+            <li>Updating a single link meant re-opening and editing raw code every time</li>
+            <li>Clients with hundreds of properties had no shared approach — each site was maintained separately</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="dnote h-100">
+          <div class="dl">Why this was a real risk</div>
+          <ul>
+            <li>Both methods had no safeguards — broken code was saved and published instantly to client-facing sites.</li>
+            <li>Any visual break affects client trust and team credibility. Only designers or developers could fix it, meaning even a small change required escalation and wait time.</li>
+            <li>As the number of properties grew, so did the time cost and risk of error.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HMW -->
+<section class="case-section">
+  <div class="container">
+    <div class="hmw-block">
+      <div class="hmw-label">How Might We</div>
+      <p>How might we let anyone on the team — not just designers and developers — create, manage, and publish custom navigation menus for property websites, without ever touching a single line of code?</p>
+    </div>
+  </div>
+</section>
+
+<!-- COMPANY-LEVEL USE CASE -->
+<section class="case-section" style="background: var(--white);">
+  <div class="container">
+    <p class="sec-label">Key Use Case — Company-Level Menus</p>
+    <div class="row g-5 align-items-center">
+      <div class="col-md-5">
+        <h2 class="sec-title">One menu, hundreds of properties</h2>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.75;">A common real-world scenario: a client manages 100+ properties and needs the same set of links — Terms &amp; Conditions, Accessibility Statement, a shared contact page — to appear on every website. Before, this meant updating each property manually.</p>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.75;">With Additional Menus, the team creates <strong>one menu at the company level</strong>. It is then called on each property website using the Site Link Widget in the Site Editor — no duplication, no per-property code, and any future updates flow to all properties automatically.</p>
+      </div>
+      <div class="col-md-7">
+        <div class="step-flow">
+          <div class="step-box">
+            <div class="step-num">Step 1 — Create at Company Level</div>
+            <div class="step-text">Navigate to <strong>Company Configuration → Additional Menus</strong>. Select or enter the company ID, then create a new menu (e.g. "Common Links") with all shared URLs the client wants across every property.</div>
+          </div>
+          <div class="step-box">
+            <div class="step-num">Step 2 — Publish Once</div>
+            <div class="step-text">Click <strong>Publish Changes</strong>. The menu is now saved at the company level and made available as a widget across all properties under that client — no need to recreate it per site.</div>
+          </div>
+          <div class="step-box">
+            <div class="step-num">Step 3 — Call it on Any Property via Site Link Widget</div>
+            <div class="step-text">Open the Site Editor for any property. Add the <strong>Site Link Widget</strong>, select the company-level menu, choose orientation, and click Update. The same menu appears live on that property's website.</div>
+          </div>
+          <div class="step-box">
+            <div class="step-num">Step 4 — Update Once, Reflect Everywhere</div>
+            <div class="step-text">When a shared URL needs to change, update it once in the company-level menu and republish. Every property that uses this menu reflects the change — no per-property editing required.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Design Constraints</p>
+    <h2 class="sec-title mb-4">Limits we had to work within</h2>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="constraint-card">
+          <div class="constraint-title">Must live inside the existing configuration panel</div>
+          <p>The feature had to fit inside the current Site Manager structure — under Company Configuration — without introducing new navigation patterns users would need to learn.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="constraint-card">
+          <div class="constraint-title">Must be safe for non-technical users</div>
+          <p>Client success managers also use this platform. The entire flow had to be visual and form-based — no code editor, no raw markup, no technical steps of any kind.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="constraint-card">
+          <div class="constraint-title">Must connect to the existing Site Editor (CMS)</div>
+          <p>Created menus needed to surface as widgets in the Site Editor so they could be placed on any page like any other component — without bypassing the existing CMS workflow.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO WE DESIGNED FOR -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Who We Designed For</p>
+    <h2 class="sec-title mb-4">Three types of users, one shared need</h2>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="user-card">
+          <div class="user-role">Designer</div>
+          <div class="user-need">Needs to add custom navigation links to a property website without spending time writing and maintaining raw HTML code. Wants a visual tool that is fast and error-free.</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="user-card">
+          <div class="user-role">Client Success Manager</div>
+          <div class="user-need">Manages property accounts and often needs to add or update links like Floor Plans or Terms pages. Cannot write code — needs full independence to make these updates without waiting for a developer.</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="user-card">
+          <div class="user-role">Developer</div>
+          <div class="user-need">Used to be the only person who could add menus via code injection. Wants to hand this task off entirely so they can focus on real development work instead of repetitive content updates.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USER FLOW -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">User Flow — New Feature</p>
+    <h2 class="sec-title mb-2">The complete journey from login to live menu</h2>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:28px;">The flow below shows every step a user takes — from logging in to seeing their menu live. Key stages: navigate to Additional Menus → create or select a menu → add pages and custom links → publish changes → place the Site Link Widget in the Site Editor.</p>
+    <div class="flow-zoom-wrap">
+      <div class="flow-zoom-inner" id="flowZoomInner" title="Hover to zoom · Click to open full view">
+        <img src="Additional_Menu_Flow.jpg" alt="Additional Menus user flow diagram" id="flowZoomImg"/>
+        <div class="zoom-hint">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          Hover to zoom · Click for full view
+        </div>
+      </div>
+      <div class="img-caption"><strong>Full flow:</strong> Login → Select Company → Additional Menus → Create New Menu or Select Existing → Add Pages / Custom Links → Sort items → Publish Changes → Site Editor (CMS) → Select Site Link Widget → Select Created Menu → Choose Orientation → Click Update → Menu is live on the website.</div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="flow-lightbox" id="flowLightbox">
+      <div class="flow-lightbox-close" id="flowLbClose">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+      <img src="Additional_Menu_Flow.jpg" alt="Additional Menus flow diagram — full view"/>
+      <div class="flow-lightbox-tip">Click anywhere or press Esc to close</div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP BY STEP WALKTHROUGH -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Feature Walkthrough — Step by Step</p>
+    <h2 class="sec-title mb-2">How the feature works — from configuration to live website</h2>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:36px;">The screenshots below show the full end-to-end experience — from navigating to Additional Menus in the configuration panel, all the way to seeing the menu appear live on the property website.</p>
+
+    <div class="img-wrap mb-5">
+      <img src="additiona_menu_live.jpg" alt="Full Additional Menus feature walkthrough" class="img img-fluid">
+      <div class="img-caption"><strong>Complete walkthrough:</strong> Each step in the configuration panel is shown — navigating to Additional Menus, creating a menu, naming it, adding pages and custom links, publishing, placing the widget in the Site Editor, and the final live output on the property website footer.</div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="step-flow">
+          <div class="step-box">
+            <div class="step-num">Step 1 — Navigate to Additional Menus</div>
+            <div class="step-text">Go to <strong>Company Configuration</strong> in the Site Manager panel. Select the company using a company ID or client ID. Then click on <strong>Additional Menus</strong> in the left navigation. From here you can create a new menu or select an existing one to edit.</div>
+          </div>
+          <div class="step-box">
+            <div class="step-num">Step 2 — Create a new menu</div>
+            <div class="step-text">Click <strong>Create New Menu</strong>. A dialog appears asking you to enter a menu name. Type the name (for example, "Your Menu") and confirm. The new menu is immediately added to the dropdown list and ready to edit.</div>
+          </div>
+          <div class="step-box">
+            <div class="step-num">Step 3 — Add pages and custom links</div>
+            <div class="step-text">After selecting your menu, you can add <strong>existing pages</strong> from the site (like Floor Plans or Contact) or add <strong>custom links</strong> with any URL you choose. Both options are available in the same editor. You can also sort items to control the order in which they appear.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="step-flow">
+          <div class="step-box">
+            <div class="step-num">Step 4 — Publish changes</div>
+            <div class="step-text">Once you are happy with the menu, click <strong>Publish Changes</strong>. This saves and activates the menu, making it available as a widget inside the Site Editor (CMS). Nothing appears on the website yet — you still need to place the widget on a page.</div>
+          </div>
+          <div class="step-box">
+            <div class="step-num">Step 5 — Place the menu in the Site Editor</div>
+            <div class="step-text">Open the <strong>Site Editor</strong>. Navigate to the location where the menu should appear (for example, the footer). Find the <strong>Site Link Widget</strong> in the widget section. Select the menu you created, choose the orientation (vertical or horizontal), then click <strong>Update</strong>.</div>
+          </div>
+          <div class="step-box">
+            <div class="step-num">Step 6 — Menu is live on the website</div>
+            <div class="step-text">After updating, the menu is now <strong>visible on the live website</strong>. All the links appear exactly as configured — no code involved at any step. To update the menu later, simply go back to Additional Menus, make changes, and publish again.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE / AFTER SUMMARY -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Before &amp; After</p>
+    <h2 class="sec-title mb-4">What changed for the team</h2>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="before-card h-100">
+          <div class="ba-label">Before</div>
+          <ul class="ba-list">
+            <li>No built-in feature — menus required custom HTML or JavaScript written by hand</li>
+            <li>Only designers and developers could create or update menus; non-technical users had to wait</li>
+            <li>A single typo in code went live immediately and could break the client's website</li>
+            <li>Clients with 100+ properties had to maintain menus separately on every site — no company-level sharing</li>
+            <li>Every small change (adding a link, reordering) meant re-opening raw code</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="after-card h-100">
+          <div class="ba-label">After</div>
+          <ul class="ba-list">
+            <li>Dedicated Additional Menus section in Company Configuration — zero code required</li>
+            <li>Anyone on the team — designer, developer, or client success manager — can create and manage menus independently</li>
+            <li>Form-based input eliminates the risk of broken markup going live</li>
+            <li>Company-level menus can be created once and applied across all properties via the Site Link Widget</li>
+            <li>Links can be sorted, updated, or removed anytime through a simple visual interface</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY DECISIONS -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Key Design Decisions</p>
+    <div class="row g-5">
+      <div class="col-md-5">
+        <h2 class="sec-title">Why each part was built this way</h2>
+        <p style="font-size:14px;color:var(--ink2);">Every decision came from a clear problem. Nothing was added just to look complete — each feature directly replaced a painful manual step from the old process.</p>
+      </div>
+      <div class="col-md-7">
+        <div class="decision-row">
+          <span class="decision-tag">Form-based editor</span>
+          <span class="decision-text">Instead of a code editor or HTML textarea, menu items are added through simple input fields — a label and a URL. This makes the feature accessible to anyone on the team, not just people who know HTML.</span>
+        </div>
+        <div class="decision-row">
+          <span class="decision-tag">Existing pages + custom links</span>
+          <span class="decision-text">Users can add existing site pages directly from a dropdown (no need to know or type the URL manually) and can also add custom external links. Both needs are covered in one place without switching tools.</span>
+        </div>
+        <div class="decision-row">
+          <span class="decision-tag">Named menus with a dropdown</span>
+          <span class="decision-text">Each menu gets a name and lives in a dropdown list. Multiple menus can be created for different purposes — footer links, sidebar navigation, etc. — and each one is managed independently without interfering with the others.</span>
+        </div>
+        <div class="decision-row">
+          <span class="decision-tag">Sorting and reordering</span>
+          <span class="decision-text">Menu items can be dragged to reorder them. Before, changing the order of links meant editing the raw HTML and counting list items manually. Now it takes a few seconds with no risk of errors.</span>
+        </div>
+        <div class="decision-row">
+          <span class="decision-tag">Publish before placement</span>
+          <span class="decision-text">Publishing the menu in the configuration panel and placing it in the Site Editor are two separate steps. This gives teams flexibility — a menu can be fully built and ready before it is placed on any page. Changes can be made without touching the live layout.</span>
+        </div>
+        <div class="decision-row">
+          <span class="decision-tag">Orientation choice in the widget</span>
+          <span class="decision-text">When placing the menu in the Site Editor, the user can choose vertical or horizontal orientation. This removes the need to adjust CSS manually to change how the menu displays on the page.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDGE CASES -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Edge Cases</p>
+    <div class="row g-4">
+      <div class="col-md-6">
+        <h2 class="sec-title mb-4">Situations we accounted for</h2>
+        <div class="ec-item"><div class="ec-dot"></div><span>A newly created menu appears in the dropdown immediately after naming — no page refresh needed. Users can start adding items right away.</span></div>
+        <div class="ec-item"><div class="ec-dot"></div><span>Selecting an existing menu loads all previously added items instantly, so users continue where they left off.</span></div>
+        <div class="ec-item"><div class="ec-dot"></div><span>A menu can be deleted entirely from the dropdown if no longer needed — without affecting any other menus or touching code.</span></div>
+        <div class="ec-item"><div class="ec-dot"></div><span>A published but unplaced menu does not appear on the live site — it is available but inactive until a widget is placed in the Site Editor.</span></div>
+        <div class="ec-item"><div class="ec-dot"></div><span>Company-level menus can be placed on multiple properties simultaneously — each property's Site Editor independently calls the same menu via the Site Link Widget.</span></div>
+      </div>
+      <div class="col-md-6">
+        <div class="dnote">
+          <div class="dl">Design Principle — Accessibility Over Power</div>
+          <ul>
+            <li>The goal was not to replicate the full power of code — it was to cover all real-world needs in a way anyone can use safely.</li>
+            <li>Form fields replace raw HTML. A publish button replaces a code deployment. A widget replaces a script injection. Every step is visual, guided, and reversible.</li>
+            <li>The two-step process — configure then place — gives teams a safe buffer between building a menu and making it visible on the live site.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRADE-OFFS -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Trade-offs</p>
+    <h2 class="sec-title mb-4">What we gained and what we accepted</h2>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="tradeoff-gain h-100">
+          <div class="tradeoff-title">What we gained</div>
+          <ul>
+            <li>Anyone can create and manage menus — no technical knowledge needed</li>
+            <li>Zero risk of breaking a live site through a code mistake</li>
+            <li>Sorting, updating, and deleting items takes seconds instead of minutes</li>
+            <li>The dependency on designers and developers for menu management is fully removed</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="tradeoff-loss h-100">
+          <div class="tradeoff-title">What we accepted</div>
+          <ul>
+            <li>The feature supports standard navigation links only — highly customised HTML menus with special markup still require a developer</li>
+            <li>The two-step publish and placement process means menus are not instantly live — there is a deliberate extra step before they appear on the site</li>
+            <li>Advanced styling options (colours, fonts, spacing) are controlled by the Site Editor widget, not the menu builder itself</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="tradeoff-gain h-100">
+          <div class="tradeoff-title">Why it was worth it</div>
+          <ul>
+            <li>The vast majority of additional menu needs are standard navigation links — this feature covers nearly all real-world use cases</li>
+            <li>The deliberate publish step prevents accidental changes from going live — the slight delay is a safety feature, not a drawback</li>
+            <li>Removing developer dependency for routine menu tasks creates measurable time savings across the whole team</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="tradeoff-loss h-100">
+          <div class="tradeoff-title">What could be better next</div>
+          <ul>
+            <li>Add a live preview of the menu inside the configuration panel before publishing</li>
+            <li>Allow sub-menu or nested link support for properties that need multi-level navigation</li>
+            <li>Show which pages the menu is currently placed on, directly from the configuration view</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Impact &amp; Results</p>
+    <h2 class="sec-title mb-4">What changed after the feature launched</h2>
+    <div class="row g-3">
+      <div class="col-sm-6 col-lg-3">
+        <div class="result-card">
+          <div class="result-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div><div class="result-num">Anyone</div><div class="result-desc">Client success managers can now create and manage menus fully on their own — no developer required</div></div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="result-card">
+          <div class="result-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div><div class="result-num">Zero risk</div><div class="result-desc">No broken client sites from code mistakes — form-based input eliminates that category of error entirely</div></div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="result-card">
+          <div class="result-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div><div class="result-num">Faster</div><div class="result-desc">What used to take careful code writing now takes a few minutes in a guided visual interface</div></div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="result-card">
+          <div class="result-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+          <div><div class="result-num">Full control</div><div class="result-desc">Create, sort, update, and delete menu items at any time — no code, no waiting, no dependency</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNINGS -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Learnings</p>
+    <div class="row g-5">
+      <div class="col-md-4">
+        <h2 class="sec-title">What I learned from this project</h2>
+      </div>
+      <div class="col-md-8">
+        <div class="learning-item">
+          <div class="learn-num" style="color: #0a7b6c;">01</div>
+          <div class="learn-text">
+            <strong>Removing dependency is a feature in itself.</strong>
+            The most valuable outcome of this project was not the interface — it was the independence it gave to non-technical users. When people can do their job without waiting for someone else, everything moves faster and with less friction.
+          </div>
+        </div>
+        <div class="learning-item">
+          <div class="learn-num" style="color: #0a7b6c;">02</div>
+          <div class="learn-text">
+            <strong>Replacing code with a form is not simplification — it is accessibility.</strong>
+            The feature does not do less than the old code-based method. It does the same thing, but in a way that any user can access and use safely. Accessibility and power are not opposites.
+          </div>
+        </div>
+        <div class="learning-item">
+          <div class="learn-num" style="color: #0a7b6c;">03</div>
+          <div class="learn-text">
+            <strong>A two-step publish process builds confidence, not friction.</strong>
+            Separating "build the menu" from "place the menu on the page" felt like extra work at first. But it gives users control and safety — they can prepare something without it going live until they are ready.
+          </div>
+        </div>
+        <div class="learning-item">
+          <div class="learn-num" style="color: #0a7b6c;">04</div>
+          <div class="learn-text">
+            <strong>The best features solve a real operational pain, not just a UX problem.</strong>
+            This was not just about making something easier to use. It solved a genuine operational problem — risk, dependency, and time cost — that affected the whole team. That made the case for building it very clear.
+          </div>
+        </div>
+        <div class="learning-item">
+          <div class="learn-num" style="color: #0a7b6c;">05</div>
+          <div class="learn-text">
+            <strong>When the old way requires technical knowledge, expanding access is the goal.</strong>
+            Many internal tools are built for power users first. But when a task is routine and the only barrier is technical know-how, the right design decision is to remove that barrier entirely — not work around it.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="case-footer">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <div>
+        <div class="footer-name">Shubham Shirsat</div>
+        <div class="footer-role">Senior Web Designer → Product Designer · Yardi Softwares</div>
+      </div>
+      <div class="d-flex gap-2 flex-wrap">
+        <a href="index.html" class="footer-tag">← Portfolio</a>
+        <a href="case-study-centralise-custom-code.html" class="footer-tag">Case Study 03 →</a>
+        <a href="mailto:Shirsat@gmail.com" class="footer-tag">Get in Touch</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const el = document.documentElement;
+    const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+  });
+
+  // Flow image — cursor-tracked zoom on hover
+  const zoomInner = document.getElementById('flowZoomInner');
+  const zoomImg = document.getElementById('flowZoomImg');
+  if (zoomInner && zoomImg) {
+    zoomInner.addEventListener('mousemove', (e) => {
+      const rect = zoomInner.getBoundingClientRect();
+      const ox = ((e.clientX - rect.left) / rect.width) * 100;
+      const oy = ((e.clientY - rect.top) / rect.height) * 100;
+      zoomImg.style.transformOrigin = ox + '% ' + oy + '%';
+    });
+    zoomInner.addEventListener('mouseleave', () => {
+      zoomImg.style.transformOrigin = '50% 50%';
+    });
+
+    // Click to open lightbox
+    const lb = document.getElementById('flowLightbox');
+    const lbClose = document.getElementById('flowLbClose');
+    zoomInner.addEventListener('click', () => {
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    function closeLb() {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    lb.addEventListener('click', closeLb);
+    lbClose.addEventListener('click', (e) => { e.stopPropagation(); closeLb(); });
+    lb.querySelector('img').addEventListener('click', (e) => e.stopPropagation());
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLb(); });
+  }
+</script>
+</body>
+</html>

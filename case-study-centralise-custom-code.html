@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Case Study — Centralise Custom Code | Shubham Shirsat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,400;0,9..144,600;1,9..144,200;1,9..144,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --fr: 'Fraunces', serif;
+      --dm: 'DM Sans', sans-serif;
+      --ink: #0d0d0d;
+      --ink2: #3a3835;
+      --ink3: #8a8780;
+      --line: #e5e2db;
+      --cream: #f8f6f2;
+      --white: #ffffff;
+      --teal: #0a7b6c;
+      --teal-deep: #065a4e;
+      --teal-light: #e0f2ef;
+      --teal-mid: #c1e9e3;
+      --tag-bg: #e0f2ef;
+      --tag-c: #065a4e;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--dm); background: var(--cream); color: var(--ink); line-height: 1.65; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 3px; }
+
+    .site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 999; padding: 14px 0; background: rgba(248,246,242,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+    .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { font-family: var(--fr); font-size: 18px; font-weight: 600; color: var(--ink); text-decoration: none; }
+    .nav-logo span { color: var(--teal); }
+    .nav-back { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--ink2); text-decoration: none; transition: color .2s; }
+    .nav-back:hover { color: var(--teal); }
+    .nav-back svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .progress-bar-wrap { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 9999; }
+    .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--teal), var(--teal-mid)); transition: width .1s; }
+
+    .hero-section { padding: 100px 0 64px; border-bottom: 1px solid var(--line); position: relative; overflow: hidden; }
+    .hero-section::before { content: ''; position: absolute; top: -100px; right: -150px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, #c1e9e328 0%, transparent 70%); pointer-events: none; }
+    .cs-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--teal); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+    .cs-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--teal); }
+    .hero-title { font-family: var(--fr); font-size: clamp(28px, 4.5vw, 48px); font-weight: 400; line-height: 1.12; color: var(--ink); margin-bottom: 20px; }
+    .hero-title em { font-style: italic; font-weight: 200; color: var(--teal); }
+
+    .impact-strip { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    .impact-cell { padding: 20px 22px; text-align: center; background: var(--white); border-right: 1px solid var(--line); }
+    .impact-cell:last-child { border-right: none; }
+    .impact-num { font-family: var(--fr); font-size: 30px; font-weight: 600; color: var(--teal); line-height: 1; }
+    .impact-label { font-size: 11px; color: var(--ink3); margin-top: 5px; letter-spacing: .03em; }
+
+    .case-section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+    .case-section:last-child { border-bottom: none; }
+    .sec-label { font-size: 10px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--teal); display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
+    .sec-label::before { content: ''; width: 20px; height: 1px; background: var(--teal); }
+    .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+    h2.sec-title { font-family: var(--fr); font-size: clamp(20px, 3vw, 28px); font-weight: 400; color: var(--ink); margin-bottom: 16px; line-height: 1.2; }
+
+    .overview-table { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--white); max-width: 680px; }
+    .overview-row { display: grid; grid-template-columns: 150px 1fr; border-bottom: 1px solid var(--line); }
+    .overview-row:last-child { border-bottom: none; }
+    .ov-key { background: #f4f2ee; padding: 14px 18px; font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ink3); display: flex; align-items: center; border-right: 1px solid var(--line); }
+    .ov-val { padding: 14px 20px; font-size: 13px; color: var(--ink2); line-height: 1.6; display: flex; align-items: center; }
+    .ov-val strong { color: var(--ink); font-weight: 500; }
+
+    .problem-item { padding: 14px 0 14px 16px; border-bottom: 1px solid var(--line); border-left: 3px solid #d4453055; }
+    .problem-item:last-child { border-bottom: none; }
+    .problem-heading { font-size: 13px; font-weight: 500; color: #c0392b; margin-bottom: 4px; }
+    .problem-desc { font-size: 12px; color: var(--ink3); line-height: 1.65; margin: 0; }
+
+    .constraint-card { background: #fff7ed; border: 1px solid #f0d9b5; border-radius: 10px; padding: 18px 20px; height: 100%; }
+    .constraint-title { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #a05c00; margin-bottom: 8px; }
+    .constraint-card p { font-size: 13px; color: #7a4400; line-height: 1.65; margin: 0; }
+
+    .before-card { background: #fdf3f1; border: 1px solid #e8c4bc; border-radius: 10px; padding: 20px; height: 100%; }
+    .after-card { background: #eaf6ee; border: 1px solid #b8dcc3; border-radius: 10px; padding: 20px; height: 100%; }
+    .ba-label { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
+    .before-card .ba-label { color: #a0341e; }
+    .after-card .ba-label { color: #1a5c35; }
+    .ba-list { list-style: none; padding: 0; margin: 0; }
+    .ba-list li { font-size: 13px; padding: 7px 0 7px 20px; border-bottom: 1px solid rgba(0,0,0,.06); position: relative; line-height: 1.6; }
+    .ba-list li:last-child { border-bottom: none; }
+    .before-card .ba-list li { color: #8b3a26; }
+    .after-card .ba-list li { color: #2d6a4f; }
+    .before-card .ba-list li::before { content: '✕'; position: absolute; left: 0; font-size: 10px; top: 9px; color: #c0392b; }
+    .after-card .ba-list li::before { content: '✓'; position: absolute; left: 0; font-size: 11px; top: 8px; color: #27ae60; font-weight: 600; }
+
+    .hmw-block { background: var(--teal-deep); border-radius: 14px; padding: 30px 36px; }
+    .hmw-block .hmw-label { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: #7bbf9a; margin-bottom: 12px; }
+    .hmw-block p { font-family: var(--fr); font-size: 20px; font-weight: 200; color: #fff; font-style: italic; line-height: 1.6; margin: 0; }
+
+    .user-card { border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; background: var(--white); height: 100%; }
+    .user-role { font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+    .user-need { font-size: 13px; color: var(--ink2); line-height: 1.7; }
+
+    .insight-block { border-left: 3px solid var(--teal); padding: 14px 20px; margin-bottom: 14px; background: #f0faf8; border-radius: 0 10px 10px 0; }
+    .insight-block p { font-size: 13px; color: var(--ink); font-style: italic; margin: 0; line-height: 1.75; }
+    .insight-block .attr { font-size: 11px; color: var(--ink3); margin-top: 6px; font-style: normal; }
+
+    .decision-row { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: flex-start; }
+    .decision-row:last-child { border-bottom: none; }
+    .decision-tag { font-size: 10px; font-weight: 500; padding: 3px 10px; border-radius: 4px; background: var(--tag-bg); color: var(--tag-c); white-space: nowrap; margin-top: 2px; flex-shrink: 0; }
+    .decision-text { font-size: 13px; color: var(--ink2); line-height: 1.65; }
+
+    .ec-item { display: flex; gap: 12px; align-items: flex-start; font-size: 13px; color: var(--ink2); padding: 11px 0; border-bottom: 1px solid var(--line); }
+    .ec-item:last-child { border-bottom: none; }
+    .ec-dot { width: 8px; height: 8px; border-radius: 50%; background: #e8a020; margin-top: 6px; flex-shrink: 0; }
+
+    .tradeoff-gain { background: #eaf6ee; border: 1px solid #b8dcc3; border-radius: 10px; padding: 20px 22px; }
+    .tradeoff-loss { background: #fdf3f1; border: 1px solid #e8c4bc; border-radius: 10px; padding: 20px 22px; }
+    .tradeoff-title { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; }
+    .tradeoff-gain .tradeoff-title { color: #1a5c35; }
+    .tradeoff-loss .tradeoff-title { color: #a0341e; }
+    .tradeoff-gain p { font-size: 13px; color: #2d6a4f; line-height: 1.7; margin: 0; }
+    .tradeoff-loss p { font-size: 13px; color: #8b3a26; line-height: 1.7; margin: 0; }
+
+    .result-card { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: flex; gap: 14px; align-items: flex-start; height: 100%; transition: transform .2s, box-shadow .2s; }
+    .result-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,123,108,.08); }
+    .result-icon { width: 38px; height: 38px; border-radius: 8px; background: var(--tag-bg); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .result-icon svg { width: 18px; height: 18px; stroke: var(--teal); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .result-num { font-family: var(--fr); font-size: 20px; font-weight: 600; color: var(--teal); line-height: 1; }
+    .result-desc { font-size: 12px; color: var(--ink3); margin-top: 4px; }
+
+    .learning-item { display: flex; gap: 18px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .learning-item:last-child { border-bottom: none; }
+    .learn-num { font-family: var(--fr); font-size: 24px; font-weight: 200; color: var(--line); flex-shrink: 0; width: 32px; line-height: 1; }
+    .learn-text { font-size: 13.5px; color: var(--ink2); line-height: 1.75; }
+    .learn-text strong { color: var(--ink); font-weight: 500; }
+
+    /* Image display */
+    .img-wrap { border-radius: 12px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 4px 24px rgba(0,0,0,.07); background: #fff; }
+    .img-wrap img { width: 100%; display: block; }
+    .img-caption { background: var(--cream); border-top: 1px solid var(--line); padding: 10px 16px; font-size: 11.5px; color: var(--ink3); line-height: 1.6; }
+    .img-caption strong { color: var(--teal-deep); font-weight: 500; }
+
+    /* Flow image zoom */
+    .flow-zoom-wrap {
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      box-shadow: 0 4px 24px rgba(0,0,0,.07);
+      background: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+    .flow-zoom-inner {
+      overflow: hidden;
+      position: relative;
+      cursor: zoom-in;
+    }
+    .flow-zoom-inner img {
+      width: 100%;
+      display: block;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transform-origin: var(--ox, 50%) var(--oy, 50%);
+    }
+    .flow-zoom-inner:hover img {
+      transform: scale(2.4);
+    }
+    .flow-zoom-inner .zoom-hint {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(6,90,78,0.85);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+      backdrop-filter: blur(6px);
+      transition: opacity 0.3s;
+      letter-spacing: 0.03em;
+    }
+    .flow-zoom-inner:hover .zoom-hint {
+      opacity: 0;
+    }
+    .zoom-hint svg {
+      width: 12px; height: 12px;
+      stroke: #fff; fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Lightbox overlay */
+    .flow-lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(6,10,14,0.92);
+      backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .flow-lightbox.open {
+      display: flex;
+    }
+    .flow-lightbox img {
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: 10px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.6);
+      object-fit: contain;
+      animation: lbIn .25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .flow-lightbox-close {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .flow-lightbox-close:hover { background: rgba(255,255,255,.22); }
+    .flow-lightbox-close svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .flow-lightbox-tip {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: rgba(255,255,255,.5);
+      letter-spacing: .04em;
+    }
+    @keyframes lbIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    /* Annotation note */
+    .dnote { background: var(--teal-deep); color: #fff; border-radius: 10px; padding: 16px 18px; }
+    .dnote .dl { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #7bbf9a; margin-bottom: 8px; }
+    .dnote ul { margin: 0; padding-left: 16px; }
+    .dnote ul li { font-size: 12px; line-height: 1.75; }
+
+    /* Step flow boxes */
+    .step-flow { display: flex; flex-direction: column; gap: 0; }
+    .step-box { background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; position: relative; }
+    .step-box + .step-box { margin-top: 8px; }
+    .step-box::before { content: ''; position: absolute; left: 24px; top: -8px; width: 2px; height: 8px; background: var(--teal-mid); }
+    .step-box:first-child::before { display: none; }
+    .step-num { font-size: 9px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--teal); margin-bottom: 4px; }
+    .step-text { font-size: 13px; color: var(--ink2); line-height: 1.65; }
+
+    .case-footer { background: var(--teal-deep); color: var(--white); padding: 48px 0; }
+    .footer-name { font-family: var(--fr); font-size: 22px; font-weight: 400; color: var(--white); }
+    .footer-role { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 4px; }
+    .footer-tag { font-size: 12px; padding: 7px 18px; border-radius: 6px; border: 1px solid rgba(255,255,255,.25); color: rgba(255,255,255,.8); background: transparent; text-decoration: none; transition: all .2s; }
+    .footer-tag:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+    @media (max-width: 576px) {
+      .impact-cell { border-right: none; border-bottom: 1px solid var(--line); }
+      .impact-cell:last-child { border-bottom: none; }
+      .overview-row { grid-template-columns: 1fr; }
+      .ov-key { border-right: none; border-bottom: 1px solid var(--line); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+
+<nav class="site-nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">Shubham<span>.</span></a>
+      <a href="index.html#work" class="nav-back">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Portfolio
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-section">
+  <div class="container">
+    <p class="cs-eyebrow">Product Design Case Study · 03</p>
+    <h1 class="hero-title">
+      Centralise Custom Code —<br><em>Smarter Property Targeting, Safer Code Deployment</em>
+    </h1>
+    <div class="overview-table mb-4" style="max-width: 100%;">
+      <div class="overview-row">
+        <div class="ov-key">Product</div>
+        <div class="ov-val"><strong>RentCaffeine — Site Manager</strong> — an internal tool used by designers, developers, and client success teams to manage hundreds of property websites at once</div>
+      </div>
+      <div class="overview-row">
+        <div class="ov-key">My Role</div>
+        <div class="ov-val"><strong>UX / Product Designer</strong> — identified the problem, designed the full solution from flow to final screens, worked with developers and PMs to build and ship it</div>
+      </div>
+      <div class="overview-row">
+        <div class="ov-key">Project Type</div>
+        <div class="ov-val"><strong>Internal Tool Redesign</strong> — adding theme targeting, property selection, code validation, enable/disable control, and an audit log</div>
+      </div>
+      <div class="overview-row">
+        <div class="ov-key">Team</div>
+        <div class="ov-val">Project Manager, Frontend Developers, Backend Developers, Designers</div>
+      </div>
+      <div class="overview-row">
+        <div class="ov-key">Timeline</div>
+        <div class="ov-val">6 weeks from discovery to launch</div>
+      </div>
+    </div>
+    <div class="row g-0 impact-strip">
+      <div class="col impact-cell"><div class="impact-num">~80%</div><div class="impact-label">Less manual work</div></div>
+      <div class="col impact-cell"><div class="impact-num">1 place</div><div class="impact-label">One update, all theme properties</div></div>
+      <div class="col impact-cell"><div class="impact-num">Zero</div><div class="impact-label">Bad code reaching live sites</div></div>
+      <div class="col impact-cell"><div class="impact-num">Full log</div><div class="impact-label">Every change tracked with name &amp; time</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- OVERVIEW & PROBLEM -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">The Problem</p>
+    <div class="row g-5">
+      <div class="col-md-5">
+        <h2 class="sec-title">Custom code was scattered, untargeted, and dangerous</h2>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.75;">The existing RentCaffeine Configuration screen let you select a theme and add CSS or JS — and code would go to all properties under that theme. But there was no way to pick specific properties within a theme, no error checking before saving, and no way to pause or roll back code quickly.</p>
+      </div>
+      <div class="col-md-7">
+        <div class="problem-item">
+          <div class="problem-heading">No properties selector within a theme</div>
+          <p class="problem-desc">Selecting a theme sent code to every property under that theme — all or nothing. There was no way to pick specific properties within a theme and apply code only to those.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-heading">No code validation</div>
+          <p class="problem-desc">Bad code with syntax errors was saved silently and went live immediately, breaking property sites with no warning to the user.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-heading">No enable / disable switch</div>
+          <p class="problem-desc">The only way to turn off code was to delete it completely — risky, slow, and final. No quick toggle to pause and test.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-heading">No change history</div>
+          <p class="problem-desc">There was no record of who changed what or when. If something broke on a live site, tracing the cause was nearly impossible.</p>
+        </div>
+        <div class="problem-item">
+          <div class="problem-heading">Manual property-by-property updates</div>
+          <p class="problem-desc">For clients with hundreds of properties, users had to open each one individually and repeat the same change — very slow and error-prone.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PREVIOUS SCREEN -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Before — Previous Screen</p>
+    <h2 class="sec-title mb-2">What the screen looked like before</h2>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:28px;">The original screen had no theme selector, no properties dropdown, no validation, and no enable/disable toggle. Code was saved directly with a single Save button — no safety at all.</p>
+    <div class="row g-4 align-items-start">
+      <div class="col-lg-8">
+       <div class="img-wrap mb-5">
+        <img src="Previous screen (1).jpg" class="img img-fluid">
+       </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="before-card h-100">
+          <div class="ba-label">What was missing</div>
+          <ul class="ba-list">
+            <li>No properties selector — code applied to every property under the selected theme with no way to pick specific ones</li>
+            <li>No properties multi-select — impossible to target specific properties</li>
+            <li>No syntax check before saving — broken code went live silently</li>
+            <li>No enable / disable checkbox — had to delete code to stop it</li>
+            <li>No audit log — no record of who changed what or when</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HMW -->
+<section class="case-section">
+  <div class="container">
+    <div class="hmw-block">
+      <div class="hmw-label">How Might We</div>
+      <p>How might we let teams target specific properties within a theme — not just the whole theme — while keeping live sites safe from broken code and giving teams full control to pause or roll back instantly?</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONSTRAINTS -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Design Constraints</p>
+    <h2 class="sec-title mb-4">Limits we had to work within</h2>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="constraint-card">
+          <div class="constraint-title">Must fit inside the existing tool</div>
+          <p>The solution had to work inside the current Site Manager screen and navigation. We couldn't build a separate product or move users to a new place.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="constraint-card">
+          <div class="constraint-title">Must be safe for non-developers</div>
+          <p>Client success managers also use this screen — not just developers. The design had to prevent mistakes automatically, not rely on technical knowledge to avoid them.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="constraint-card">
+          <div class="constraint-title">Must work at scale — 2000+ properties</div>
+          <p>Enterprise clients manage thousands of properties across many themes. The theme and property selectors had to work cleanly at full scale without extra manual effort.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USERS -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Who We Designed For</p>
+    <h2 class="sec-title mb-4">Three types of users, one shared screen</h2>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="user-card">
+          <div class="user-role">Designer</div>
+          <div class="user-need">Needs to apply CSS only to properties using a specific theme. Does not want code landing on the wrong theme or having to repeat work property by property.</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="user-card">
+          <div class="user-role">Developer</div>
+          <div class="user-need">Writes JS code and handles urgent fixes. Needs to know if there are errors before code goes live, and needs a quick way to switch code off if something breaks.</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="user-card">
+          <div class="user-role">Client Success Manager</div>
+          <div class="user-need">Manages large client accounts. Needs a full record of every code change — who did it and when — so they can trace any problem and answer client questions with confidence.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Research Insights</p>
+    <div class="row g-5">
+      <div class="col-md-5">
+        <h2 class="sec-title">What users told us</h2>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.75;">Speaking with designers, developers, and client success managers showed the same pain from different angles — too much manual work, no safety net, and no way to fix mistakes quickly.</p>
+      </div>
+      <div class="col-md-7">
+        <div class="insight-block">
+          <p>"I need to apply a CSS fix to just three specific properties under Astra — but the tool applies it to every Astra property. There is no way to narrow it down. I have to go property by property and do it manually."</p>
+          <div class="attr">— Designer</div>
+        </div>
+        <div class="insight-block">
+          <p>"There is no error check when you save. You find out the code is broken only after a client calls to say their site looks completely wrong."</p>
+          <div class="attr">— Developer</div>
+        </div>
+        <div class="insight-block">
+          <p>"To stop the code from running you have to delete it. There is no off switch. And there is zero record of who made changes or when — nothing to trace a problem back to."</p>
+          <div class="attr">— Client Success Manager</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USER FLOW -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">User Flow — Before &amp; After</p>
+    <h2 class="sec-title mb-2">How the user journey changed</h2>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:28px;">The flow diagram below shows exactly what steps existed before versus what the new flow looks like. The key additions are theme selection, property selection, code validation, enable/disable, and an automatic audit log.</p>
+    <div class="flow-zoom-wrap">
+      <div class="flow-zoom-inner" id="flowZoomInner" title="Hover to zoom · Click to open full view">
+        <img src="user_flow_before_and_after.jpg" alt="User flow before and after" id="flowZoomImg"/>
+        <div class="zoom-hint">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          Hover to zoom · Click for full view
+        </div>
+      </div>
+      <div class="img-caption"><strong>Before (left):</strong> Login → select company → RentCaffeine Configuration → choose Property Site or Resident Portal → select CSS/JS → add code → hit Save. No property-level targeting, no validation, no audit. &nbsp;|&nbsp; <strong>After (right):</strong> The flow now includes theme selection, properties selector (with Select All), code type, code entry, syntax validation, enable/disable, and automatic audit logging on every save.</div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="flow-lightbox" id="flowLightbox">
+      <div class="flow-lightbox-close" id="flowLbClose">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+      <img src="user_flow_before_and_after.jpg" alt="User flow before and after — full view"/>
+      <div class="flow-lightbox-tip">Click anywhere or press Esc to close</div>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE / AFTER SUMMARY -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Before &amp; After</p>
+    <h2 class="sec-title mb-4">What changed for users</h2>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="before-card h-100">
+          <div class="ba-label">Before</div>
+          <ul class="ba-list">
+            <li>No properties selector — selecting a theme sent code to every property under it. There was no way to target specific properties within a theme.</li>
+             <li>No code checking — bad code was saved without any warning and went live silently.</li>
+            <li>No enable / disable switch — code was either active or had to be fully deleted to remove it.</li>
+            <li>No change history — nobody could see who made changes or when they happened.</li>
+            <li>Had to open every property one by one to update code — very slow and tiring.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="after-card h-100">
+          <div class="ba-label">After</div>
+          <ul class="ba-list">
+            <li>Properties selector — after picking a theme, a second dropdown shows all properties under it. You can select all or pick specific ones only.</li>
+            <li>Code validation — red alert when syntax is wrong; green alert when code is correct. Bad code cannot be saved.</li>
+            <li>Enable / disable checkbox — turn code on or off at any time without deleting it. Resident Portal applies to all portal themes automatically — no theme step needed.</li>
+            <li>Audit log — every save records the user ID and exact date and time automatically.</li>
+            <li>One update in one place saves ~80% of the manual work across all properties in a theme.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGN SCREENS -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Design Screens — Step by Step</p>
+    <h2 class="sec-title mb-2">The final Figma designs — each step explained</h2>
+    <p style="font-size:14px;color:var(--ink2);margin-bottom:36px;">The screens below show the complete redesigned Property Site flow. Each step builds on the previous one — making the path from intention to deployed code safe, targeted, and fully logged.</p>
+
+    <!-- All figma screens as one image -->
+ 
+    <div class="img-wrap mb-5">
+      
+        <img src="Figma_screens_custom_codes.jpg" class="img img-fluid">  
+    </div>
+
+    <!-- Step annotations -->
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="step-flow">
+          <div class="step-box">
+            <div class="step-num">Step 1 — Choose scope</div>
+            <div class="step-text">Pick <strong>Property Site</strong> or <strong>Resident Portal</strong> using the tab at the top. Resident Portal skips the theme selection step entirely — portal code automatically applies to all portal themes, so there is nothing extra to select.</div>
+          </div>
+          <div class="step-box">
+            <div class="step-num">Step 2 — Select theme</div>
+            <div class="step-text">Choose a theme from the first dropdown (for example, Astra). The second dropdown then automatically shows only the properties that use that theme. You can tick all of them with <strong>Select All</strong> or pick individual ones.</div>
+          </div>
+          <div class="step-box">
+            <div class="step-num">Step 3 — Choose code type</div>
+            <div class="step-text">Use the <strong>Custom CSS</strong> or <strong>Custom JS</strong> tab to choose what kind of code you are adding. The correct editor mode loads for whichever tab you pick.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="step-flow">
+          <div class="step-box">
+            <div class="step-num">Step 4 — Add code &amp; validate</div>
+            <div class="step-text">Type your CSS or JS into the editor. When you hit <strong>Save</strong>, the system checks for syntax errors. If there is a mistake, a <strong>red alert</strong> appears — "Please fix the syntax errors" — and the code is not saved. Fix the issue and save again. If the code is correct, a <strong>green alert</strong> confirms: "Syntax validated and saved successfully."</div>
+          </div>
+          <div class="step-box">
+            <div class="step-num">Step 5 — Enable code &amp; save</div>
+            <div class="step-text">Tick the <strong>Enable</strong> checkbox to make the code active, then hit Save. A green <strong>"Code Enabled"</strong> alert confirms it is live. To pause the code without losing it, simply untick Enable and save again — no deletion needed. Every save automatically records the <strong>user ID, date, and time</strong> in the Last Updated field.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY DECISIONS -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Key Design Decisions</p>
+    <div class="row g-5">
+      <div class="col-md-5">
+        <h2 class="sec-title">Why each part was built this way</h2>
+        <p style="font-size:14px;color:var(--ink2);">Every decision came directly from a problem that users reported. Each feature targets one specific pain point — nothing was added just for the sake of it.</p>
+      </div>
+      <div class="col-md-7">
+        <div class="decision-row">
+          <span class="decision-tag">Theme selector</span>
+          <span class="decision-text">Theme selection already worked before — picking Astra sent code to all Astra properties. The new addition is the properties dropdown that appears after theme selection, letting users pick specific properties within that theme rather than always hitting all of them.</span>
+        </div>
+        <div class="decision-row">
+          <span class="decision-tag">Auto-filtered properties</span>
+          <span class="decision-text">After selecting a theme, the properties dropdown shows only the properties using that theme. Users can select all or pick one by one. No manual searching or cross-referencing needed.</span>
+        </div>
+        <div class="decision-row">
+          <span class="decision-tag">Resident Portal — no theme step</span>
+          <span class="decision-text"> The Resident Portal uses only one theme. Code added here is applied to all portal pages. The theme option was removed because it was not needed and could confuse users.</span>
+        </div>
+        <div class="decision-row">
+          <span class="decision-tag">Save-time validation</span>
+          <span class="decision-text">When Save is clicked, the system checks for syntax errors. If there is an error, a red alert is shown and the code is not saved. If the code is correct, a green alert confirms it.</span>
+        </div>
+        <div class="decision-row">
+          <span class="decision-tag">Enable / disable checkbox</span>
+          <span class="decision-text">Lets users switch code on or off at any time without deleting it. Perfect for urgent situations — if something breaks, switch it off in seconds to test. The code stays saved and ready to turn back on.</span>
+        </div>
+        <div class="decision-row">
+          <span class="decision-tag">Automatic audit log</span>
+          <span class="decision-text">Every time Save is clicked, the system records the user ID and exact date and time automatically. The record is always visible — no extra steps, no guessing who made the last change.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDGE CASES -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Edge Cases</p>
+    <div class="row g-4">
+      <div class="col-md-6">
+        <h2 class="sec-title mb-4">What happens when things go wrong</h2>
+        <div class="ec-item"><div class="ec-dot"></div><span>If the code has errors, it will not be saved. This prevents broken code from going live.</span></div>
+
+<div class="ec-item"><div class="ec-dot"></div><span>To apply code to all properties in a theme, users can select “All” in one click.</span></div>
+
+<div class="ec-item"><div class="ec-dot"></div><span>The enable/disable option works like an on/off switch. Users can turn off code anytime without deleting it.</span></div>
+
+<div class="ec-item"><div class="ec-dot"></div><span>An audit log saves every change with user name and time, so all updates are tracked.</span></div>
+
+<div class="ec-item"><div class="ec-dot"></div><span>The Resident Portal uses one theme, so theme selection is removed and code applies automatically.</span></div>
+      </div>
+      <div class="col-md-6">
+        <div class="dnote">
+          <div class="dl">Design Principle — Safety First</div>
+        <ul>
+  <li>The system is designed to prevent mistakes by default, not just warn users.</li>
+  <li>Red and green messages are easy to understand, so users don’t need to learn anything new.</li>
+  <li>The enable/disable toggle lets users fix mistakes in one click without developer help.</li>
+  <li>Selecting a theme first helps make sure code is applied to the right properties.</li>
+</ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRADE-OFFS -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Trade-offs</p>
+    <h2 class="sec-title mb-4">What we gained and what we accepted</h2>
+    <div class="row g-3">
+
+  <div class="col-md-6">
+    <div class="tradeoff-gain h-100">
+      <div class="tradeoff-title">What we gained</div>
+      <ul>
+        <li>Users can target specific properties within a theme</li>
+        <li>"Select All" allows quick updates for all properties</li>
+        <li>Validation prevents broken code from going live</li>
+        <li>The toggle allows users to turn code on/off without deleting it</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="tradeoff-loss h-100">
+      <div class="tradeoff-title">What we accepted</div>
+      <ul>
+        <li>Users must first select a theme and properties before adding code</li>
+        <li>Validation happens only on Save, not while typing</li>
+        <li>The process is slightly slower but more accurate</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="tradeoff-gain h-100">
+      <div class="tradeoff-title">Why it was worth it</div>
+      <ul>
+        <li>Extra steps help prevent code from being applied to the wrong properties</li>
+        <li>Improves safety and reduces errors</li>
+        <li>A few extra seconds can save hours of fixing issues</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="tradeoff-loss h-100">
+      <div class="tradeoff-title">What could be better next</div>
+      <ul>
+        <li>Add live validation while typing, not just on Save</li>
+        <li>Show a preview of affected properties before saving</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Impact &amp; Results</p>
+    <h2 class="sec-title mb-4">What improved after launch</h2>
+    <div class="row g-3">
+      <div class="col-sm-6 col-lg-3">
+        <div class="result-card">
+          <div class="result-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+          <div><div class="result-num">~80% saved</div><div class="result-desc">Less manual work — one update covers all properties in the selected theme at once</div></div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="result-card">
+          <div class="result-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div><div class="result-num">Zero</div><div class="result-desc">Bad code deployed to live sites since launch — validation catches everything first</div></div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="result-card">
+          <div class="result-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div><div class="result-num">Instant</div><div class="result-desc">Code can be paused without a developer — enable/disable works in seconds</div></div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="result-card">
+          <div class="result-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div><div class="result-num">Full record</div><div class="result-desc">Every code change has a user name and timestamp — nothing goes untracked</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNINGS -->
+<section class="case-section">
+  <div class="container">
+    <p class="sec-label">Learnings</p>
+    <div class="row g-5">
+      <div class="col-md-4">
+        <h2 class="sec-title">What I learned from this project</h2>
+      </div>
+      <div class="col-md-8">
+<div class="learning-item">
+  <div class="learn-num" style="color: #0a7b6c;">01</div>
+  <div class="learn-text">
+    <strong>Users don’t always need one solution for everything.</strong>
+    The old system applied code to all properties. This worked for global changes but made targeted updates difficult. Adding a property selector helped users choose exactly where to apply the code.
+  </div>
+</div>
+
+<div class="learning-item">
+  <div class="learn-num" style="color: #0a7b6c;">02</div>
+  <div class="learn-text">
+    <strong>Extra steps can prevent mistakes.</strong>
+    Asking users to select a theme and properties first may feel like extra work, but it helps avoid major errors. A few extra seconds can save a lot of time later.
+  </div>
+</div>
+
+<div class="learning-item">
+  <div class="learn-num" style="color: #0a7b6c;">03</div>
+  <div class="learn-text">
+    <strong>Safe controls build confidence.</strong>
+    The enable/disable toggle lets users test code safely. They can turn it off anytime without deleting it or needing developer help.
+  </div>
+</div>
+
+<div class="learning-item">
+  <div class="learn-num" style="color: #0a7b6c;">04</div>
+  <div class="learn-text">
+    <strong>Tracking changes improves responsibility.</strong>
+    When every change is recorded, users become more careful. This helps reduce mistakes and improves team behavior.
+  </div>
+</div>
+
+<div class="learning-item">
+  <div class="learn-num" style="color: #0a7b6c;">05</div>
+  <div class="learn-text">
+    <strong>Smart defaults make work easier.</strong>
+    The system automatically shows properties based on the selected theme. Users don’t need to remember everything, which makes the process simpler.
+  </div>
+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="case-footer">
+  <div class="container">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <div>
+        <div class="footer-name">Shubham Shirsat</div>
+        <div class="footer-role">Senior Web Designer → Product Designer · Yardi Softwares</div>
+      </div>
+      <div class="d-flex gap-2 flex-wrap">
+        <a href="index.html" class="footer-tag">← Portfolio</a>
+        <a href="case-study-2_css-js-injection.html" class="footer-tag">Case Study 02 →</a>
+        <a href="mailto:Shirsat@gmail.com" class="footer-tag">Get in Touch</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const el = document.documentElement;
+    const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+  });
+
+  // Flow image — cursor-tracked zoom on hover
+  const zoomInner = document.getElementById('flowZoomInner');
+  const zoomImg = document.getElementById('flowZoomImg');
+  if (zoomInner && zoomImg) {
+    zoomInner.addEventListener('mousemove', (e) => {
+      const rect = zoomInner.getBoundingClientRect();
+      const ox = ((e.clientX - rect.left) / rect.width) * 100;
+      const oy = ((e.clientY - rect.top) / rect.height) * 100;
+      zoomImg.style.transformOrigin = ox + '% ' + oy + '%';
+    });
+    zoomInner.addEventListener('mouseleave', () => {
+      zoomImg.style.transformOrigin = '50% 50%';
+    });
+
+    // Click to open lightbox
+    const lb = document.getElementById('flowLightbox');
+    const lbClose = document.getElementById('flowLbClose');
+    zoomInner.addEventListener('click', () => {
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    function closeLb() {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    lb.addEventListener('click', closeLb);
+    lbClose.addEventListener('click', (e) => { e.stopPropagation(); closeLb(); });
+    lb.querySelector('img').addEventListener('click', (e) => e.stopPropagation());
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLb(); });
+  }
+</script>
+</body>
+</html>
